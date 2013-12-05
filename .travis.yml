@@ -11,4 +11,4 @@ gemfile:
 
 matrix:
 
-script: "echo 'COME ON!' && bundle exec rake spec"
+script: bundle exec rspec
