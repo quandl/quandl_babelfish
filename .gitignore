@@ -1,0 +1,7 @@
+.idea/
+/Gemfile.lock
+/pkg
+/tmp
+.rvmrc
+*.gem
+*.log
