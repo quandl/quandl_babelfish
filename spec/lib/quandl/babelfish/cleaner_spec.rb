@@ -9,7 +9,7 @@ describe Cleaner do
   
   context "garbage" do
     let(:input){ [[2456624, 10], [2456625, 20], [2456626, 30]] }
-    it{ should be_eq_at_index '[0][0]', Date.new(1990,12,31) }
+    it{ should be_eq_at_index '[0][0]', Date.new(1970,01,29) }
   end
   
   context "annual" do
