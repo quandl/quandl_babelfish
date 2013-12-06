@@ -12,6 +12,11 @@ describe Cleaner do
     it{ should be_eq_at_index '[0][0]', Date.new(1970,01,29) }
   end
   
+  context "headers with whitespace" do
+    let(:input){ [["   Date   ", " C1    ", "C2   ", "    C4"],[1990,1,2,3],[1991,4,5,6]] }
+    its(:headers){ should eq ["Date", "C1", "C2", "C4"] }
+  end
+  
   context "annual" do
     let(:input){ [[1990,1,2,3],[1991,4,5,6]] }
     it{ should be_eq_at_index '[0][0]', Date.new(1990,12,31) }
