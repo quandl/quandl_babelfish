@@ -24,7 +24,7 @@ module Quandl::Babelfish
           #find good example and extract all info from it and apply it to each of the dates in the set
           good_sample = find_good_date(all_dates)
 
-          raise Quandl::Errors::GuessDateFormat.new("Unable to find date format for provide dates") if good_sample.nil?
+          raise Error::GuessDateFormat.new("Unable to find date format for provide dates") if good_sample.nil?
 
           date_format, frequency = analyze_date_format(good_sample)
 
@@ -35,7 +35,7 @@ module Quandl::Babelfish
 
         iso_dates=[]
         all_dates.each do |fuzzy_date|
-          temp_date = convert(fuzzy_date, date_format) rescue raise(Quandl::Errors::InvalidDate,fuzzy_date)
+          temp_date = convert(fuzzy_date, date_format) rescue raise(Error::InvalidDate,fuzzy_date)
           iso_dates  << frequency_transform(temp_date, frequency)
         end
 
