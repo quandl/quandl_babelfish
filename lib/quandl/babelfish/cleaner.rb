@@ -7,7 +7,7 @@ class Cleaner
       return nil,nil if dirty_array.nil?
 
       #check if first line is header
-      header=dirty_array.shift unless DateMaid::analyze_date_format(DateMaid::disinfect(dirty_array[0][0]))[0]
+      header=DateMaid::disinfect(dirty_array.shift) unless DateMaid::analyze_date_format(DateMaid::disinfect(dirty_array[0][0])[0])[0]
 
       #converts dates first
       dirty_array

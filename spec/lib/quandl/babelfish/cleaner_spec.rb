@@ -41,7 +41,7 @@ describe Cleaner do
     it{ should be_eq_at_index '[0][1]', 1 }
     it{ should be_eq_at_index '[0][2]', 2.3 }
     it{ should be_eq_at_index '[0][3]', nil }
-    its(:headers){ should eq ['Date',0,0,0] }
+    its(:headers){ should eq ['Date','0','0','0'] }
   end
 
 end

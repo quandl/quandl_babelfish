@@ -18,7 +18,7 @@ module Quandl::Babelfish
       def sweep(all_dates)
         return nil if all_dates.nil?
 
-        all_dates = all_dates.collect{|x| disinfect x}
+        all_dates = disinfect all_dates
 
         if @settings[:format].nil?
           #find good example and extract all info from it and apply it to each of the dates in the set
@@ -96,10 +96,12 @@ module Quandl::Babelfish
         [nil, nil]
       end
 
-      def disinfect(date)
-        date.to_s.encode!('UTF-8', 'UTF-8', :invalid => :replace)
-        date.to_s.gsub!(/[^\x01-\x7f]/,'')
-        date.to_s.strip.gsub(/\s\s+/, ' ')
+      def disinfect(dates)
+        [*dates].collect do |date|
+          date.to_s.encode!('UTF-8', 'UTF-8', :invalid => :replace)
+          date.to_s.gsub!(/[^\x01-\x7f]/,'')
+          date.to_s.strip.gsub(/\s\s+/, ' ')
+        end
       end
       private
 
