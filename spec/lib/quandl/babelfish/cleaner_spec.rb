@@ -7,6 +7,11 @@ describe Cleaner do
   let(:output){ Cleaner.process(input) }
   subject{ output }
   
+  context "garbage" do
+    let(:input){ [[2456624, 10], [2456625, 20], [2456626, 30]] }
+    it{ should be_eq_at_index '[0][0]', Date.new(1990,12,31) }
+  end
+  
   context "annual" do
     let(:input){ [[1990,1,2,3],[1991,4,5,6]] }
     it{ should be_eq_at_index '[0][0]', Date.new(1990,12,31) }
