@@ -1,5 +1,4 @@
-module Quandl
-module Babelfish
+module Quandl::Babelfish
 
   #responsible for number formatting
   class DateMaid
@@ -19,7 +18,7 @@ module Babelfish
       def sweep(all_dates)
         return nil if all_dates.nil?
 
-        all_dates = disinfect(all_dates)
+        all_dates = all_dates.collect{|x| disinfect x}
 
         if @settings[:format].nil?
           #find good example and extract all info from it and apply it to each of the dates in the set
@@ -43,15 +42,67 @@ module Babelfish
         iso_dates
       end
 
-      private
-      def disinfect(dates)
-        dates.collect do |x|
-          x.to_s.encode!('UTF-8', 'UTF-8', :invalid => :replace)
-          x.to_s.gsub!(/[^\x01-\x7f]/,'')
-          x.to_s.strip.gsub(/\s\s+/, ' ')
-        end
+      def analyze_date_format(example)
+        return nil if example.nil?
 
+        # Regular formats and Custom formats (where Date.parse and Date.strptime
+        # fear to tread)
+        if re = example.match(/^(\d{1,2})\D(\d{1,2})\D\d{4}/) # eg "07/03/2012"
+          if re[1].to_i > 12
+            return '%d-%m-%Y', nil
+          else
+            return '%m-%d-%Y', nil
+          end
+        end
+        if re = example.match(/^(\d{1,2})\D(\d{1,2})\D\d{2}/) # eg "07/03/12"
+          if re[1].to_i > 12
+            return '%d-%m-%y', nil
+          else
+            return '%m-%d-%y', nil
+          end
+        end
+        # order these guys from most specific to most general
+        return "%Y", "annual" if example =~ /^\d{4}[\s]?-[\s]?\d{4}$/
+        return '%Y%m%d', 'daily' if example =~ /^\d{8}$/ && example[4..5].to_i < 13 && example[6..7].to_i < 32 # precisely 8 digits - yyyymmdd
+        return 'epoch', 'daily' if example =~ /^\d{7}.*$/ # 7 or more digits - epoch
+        return '%Y', 'annual' if example =~ /^\d{4}$/ # 4 digits
+        return '%Y', 'annual' if example =~ /^\d{4}\.0$/ # 4 digits with a dot 0 for excel
+        return ':year_quarter', 'quarterly' if example =~ /^\d{4}[Qq]\d$/ # 4 digits, Q, digit (here because the next pattern would override it)
+        return '%YM%m', 'monthly' if example =~ /^\d{4}M\d{1,2}$/ # 2007M08
+        return '%GW%V', 'weekly' if example =~ /^\d{4}W\d{1,2}$/ # 2012W01
+        return '%Y-%m', 'monthly' if example =~ /^\d{4}\D\d{1,2}$/ # 4 digits, separator, 1-2 digits
+        return '%m-%Y', 'monthly' if example =~ /^\d{1,2}\D\d{4}$/ # 1-2 digits, separator, 4 digits
+        return '%Y%m', 'monthly' if example =~ /^\d{6}$/ # 6 digits
+        return '%Y-%b', 'monthly' if example =~ /^\d{4}\D\w{3}$/ # 4 digits, separator, 3 letters
+        return '%b-%Y', 'monthly' if example =~ /^\w{3}\D\d{4}$/ # 3 letters, separator, 4 digits
+        return '%b-%y', 'monthly' if example =~ /^\w{3}\D\d{2}$/ # 3 letters, separator, 2 digits
+        return '%Y%b', 'monthly' if example =~ /^\d{4}\w{3}$/ # 4 digits, 3 letters
+        return '%b%Y', 'monthly' if example =~ /^\w{3}\d{4}$/ # 3 letters, 4 digits
+        return '%Y-%b-%d', 'daily' if example =~ /^\d{4}\D\w{3}\D\d{1,2}$/ # 4 digits, separator, 3 letters, separator, 1-2 digits
+        return '%Y-%m-%d', 'daily' if example =~ /^\d{4}\D\d{1,2}\D\d{1,2}$/ # 4 digits, separator, 1-2 digits, separator, 1-2 digits
+        return '%d-%b-%Y', 'daily' if example =~ /^\d{1,2}\D\w{3}\D\d{4}$/ # 1-2 digits, separator, 3 letters, separator, 4 digits
+        return '%Y%b%d', 'daily' if example =~ /^\d{4}\w{3}\d{1,2}$/ # 4 digits, 3 letters, 1-2 digits
+        return '%d%b%Y', 'daily' if example =~ /^\d{1,2}\w{3}\d{4}$/ # 1-2 digits, 3 letters, 4 digits
+        return '%d-%b-%y', 'daily' if example =~ /^\d{1,2}\D\w{3}\D\d{2}$/ # 1-2 digits, 3 letters, 2 digits
+        return '%b-%d-%Y', 'daily' if example =~ /^\w{3}\D\d{1,2}\D{1,2}\d{4}$/ # 3 letters, separator, 1-2 digits, separator(s), 4 digits
+
+        #our custom formats
+        return ':year_quarter', 'quarterly' if example =~ /^\d{4}\D[Qq]\d$/ # 4 digits, separator, Q, digit
+        return ':excel-1900', 'daily' if example =~ /^\d{5}$/ # 5 digits
+        return ':excel-1900', 'daily' if example =~ /^\d{5}\.0$/ # 5 digits dot zero excel
+
+        # No, try default date parse
+        # raise PostProcessorException, "Unable to guess date format for #{example}"
+        [nil, nil]
       end
+
+      def disinfect(date)
+        date.to_s.encode!('UTF-8', 'UTF-8', :invalid => :replace)
+        date.to_s.gsub!(/[^\x01-\x7f]/,'')
+        date.to_s.strip.gsub(/\s\s+/, ' ')
+      end
+      private
+
 
       #converts date to specified format
       def convert(fuzzy_date, date_format)
@@ -177,62 +228,7 @@ module Babelfish
         date
       end
 
-      def analyze_date_format(example)
-        return nil if example.nil?
-
-        # Regular formats and Custom formats (where Date.parse and Date.strptime
-        # fear to tread)
-        if re = example.match(/^(\d{1,2})\D(\d{1,2})\D\d{4}/) # eg "07/03/2012"
-          if re[1].to_i > 12
-            return '%d-%m-%Y', nil
-          else
-            return '%m-%d-%Y', nil
-          end
-        end
-        if re = example.match(/^(\d{1,2})\D(\d{1,2})\D\d{2}/) # eg "07/03/12"
-          if re[1].to_i > 12
-            return '%d-%m-%y', nil
-          else
-            return '%m-%d-%y', nil
-          end
-        end
-        # order these guys from most specific to most general
-        return "%Y", "annual" if example =~ /^\d{4}[\s]?-[\s]?\d{4}$/
-        return '%Y%m%d', 'daily' if example =~ /^\d{8}$/ && example[4..5].to_i < 13 && example[6..7].to_i < 32 # precisely 8 digits - yyyymmdd
-        return 'epoch', 'daily' if example =~ /^\d{7}.*$/ # 7 or more digits - epoch
-        return '%Y', 'annual' if example =~ /^\d{4}$/ # 4 digits
-        return '%Y', 'annual' if example =~ /^\d{4}\.0$/ # 4 digits with a dot 0 for excel
-        return ':year_quarter', 'quarterly' if example =~ /^\d{4}[Qq]\d$/ # 4 digits, Q, digit (here because the next pattern would override it)
-        return '%YM%m', 'monthly' if example =~ /^\d{4}M\d{1,2}$/ # 2007M08
-        return '%GW%V', 'weekly' if example =~ /^\d{4}W\d{1,2}$/ # 2012W01
-        return '%Y-%m', 'monthly' if example =~ /^\d{4}\D\d{1,2}$/ # 4 digits, separator, 1-2 digits
-        return '%m-%Y', 'monthly' if example =~ /^\d{1,2}\D\d{4}$/ # 1-2 digits, separator, 4 digits
-        return '%Y%m', 'monthly' if example =~ /^\d{6}$/ # 6 digits
-        return '%Y-%b', 'monthly' if example =~ /^\d{4}\D\w{3}$/ # 4 digits, separator, 3 letters
-        return '%b-%Y', 'monthly' if example =~ /^\w{3}\D\d{4}$/ # 3 letters, separator, 4 digits
-        return '%b-%y', 'monthly' if example =~ /^\w{3}\D\d{2}$/ # 3 letters, separator, 2 digits
-        return '%Y%b', 'monthly' if example =~ /^\d{4}\w{3}$/ # 4 digits, 3 letters
-        return '%b%Y', 'monthly' if example =~ /^\w{3}\d{4}$/ # 3 letters, 4 digits
-        return '%Y-%b-%d', 'daily' if example =~ /^\d{4}\D\w{3}\D\d{1,2}$/ # 4 digits, separator, 3 letters, separator, 1-2 digits
-        return '%Y-%m-%d', 'daily' if example =~ /^\d{4}\D\d{1,2}\D\d{1,2}$/ # 4 digits, separator, 1-2 digits, separator, 1-2 digits
-        return '%d-%b-%Y', 'daily' if example =~ /^\d{1,2}\D\w{3}\D\d{4}$/ # 1-2 digits, separator, 3 letters, separator, 4 digits
-        return '%Y%b%d', 'daily' if example =~ /^\d{4}\w{3}\d{1,2}$/ # 4 digits, 3 letters, 1-2 digits
-        return '%d%b%Y', 'daily' if example =~ /^\d{1,2}\w{3}\d{4}$/ # 1-2 digits, 3 letters, 4 digits
-        return '%d-%b-%y', 'daily' if example =~ /^\d{1,2}\D\w{3}\D\d{2}$/ # 1-2 digits, 3 letters, 2 digits
-        return '%b-%d-%Y', 'daily' if example =~ /^\w{3}\D\d{1,2}\D{1,2}\d{4}$/ # 3 letters, separator, 1-2 digits, separator(s), 4 digits
-
-        #our custom formats
-        return ':year_quarter', 'quarterly' if example =~ /^\d{4}\D[Qq]\d$/ # 4 digits, separator, Q, digit
-        return ':excel-1900', 'daily' if example =~ /^\d{5}$/ # 5 digits
-        return ':excel-1900', 'daily' if example =~ /^\d{5}\.0$/ # 5 digits dot zero excel
-
-        # No, try default date parse
-        # raise PostProcessorException, "Unable to guess date format for #{example}"
-        [nil, nil]
-      end
 
     end
   end
-  
-end
 end
