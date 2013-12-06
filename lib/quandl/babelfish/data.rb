@@ -13,7 +13,7 @@ class Data < Array
   end
   
   def headers
-    @headers ||= []
+    @headers ||= nil
   end
   
 end

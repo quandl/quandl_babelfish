@@ -5,12 +5,12 @@ describe Quandl::Babelfish::Data do
   subject{ Quandl::Babelfish::Data.new(*data_args) }
   
   its(:to_a){ should eq [] }
-  its(:headers){ should eq [] }
+  its(:headers){ should be_nil }
     
   context "given Array" do
     let(:data_args){ [ [[1,2,3],[4,3,5]] ] }
     its(:to_a){ should eq [[1,2,3],[4,3,5]] }
-    its(:headers){ should eq [] }
+    its(:headers){ should be_nil }
   end
   
   context "given Array with :headers" do
@@ -22,12 +22,12 @@ describe Quandl::Babelfish::Data do
   context "given junk headers: Float" do
     let(:data_args){ [ 2, { headers: 1.2 } ] }
     its(:to_a){ should eq [nil,nil] }
-    its(:headers){ should eq [] }
+    its(:headers){ should be_nil }
   end
   context "given junk headers: String" do
     let(:data_args){ [ 2, { headers: '1.2' } ] }
     its(:to_a){ should eq [nil,nil] }
-    its(:headers){ should eq [] }
+    its(:headers){ should be_nil }
   end
     
 end

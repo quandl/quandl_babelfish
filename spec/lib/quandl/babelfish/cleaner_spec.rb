@@ -10,7 +10,7 @@ describe Cleaner do
     output[0][1].should ==1
     output[1][0].should ==Date.new(1991,12,31)
     output[1][3].should ==6
-    output.headers.should eq []
+    output.headers.should be_nil
   end
 
   it 'should return clean table #2' do
@@ -20,7 +20,7 @@ describe Cleaner do
     output[0][1].should ==1
     output[0][2].should ==2.3
     output[0][3].should ==nil
-    output.headers.should eq []
+    output.headers.should be_nil
   end
 
   it 'should return clean table #3 and header' do
