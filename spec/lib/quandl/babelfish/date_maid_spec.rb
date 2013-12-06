@@ -5,12 +5,12 @@ describe NumberMaid do
 
   it 'should return an exception because month and day are ambiguous YYYY' do
     dates = ['01/01/2011','1/2/2011','2/3/2011','11/1/2011']
-    lambda {DateMaid::sweep(dates)}.should raise_error(GuessDateFormatError)
+    lambda {DateMaid::sweep(dates)}.should raise_error(Quandl::Errors::GuessDateFormat)
   end
 
   it 'should return an exception because month and day are ambiguous YY' do
     dates = ['01/01/11','1/2/11','1/3/11','11/1/11']
-    lambda {DateMaid::sweep(dates)}.should raise_error(GuessDateFormatError)
+    lambda {DateMaid::sweep(dates)}.should raise_error(Quandl::Errors::GuessDateFormat)
   end
 
   it 'should remove unwanted characters from dates (eg. &nbsp;)' do
@@ -55,7 +55,7 @@ describe NumberMaid do
   it 'should throw error when 1 of the dates is invalid' do
     # It ain't a leap year
     dates = ['2/29/2011','01/01/2011','1/2/2011','1/3/2011','12/1/2011']
-    lambda {DateMaid::sweep(dates)}.should raise_error(InvalidDateError)
+    lambda {DateMaid::sweep(dates)}.should raise_error(Quandl::Errors::InvalidDate)
   end
 
   it 'should strip invalid parseable dates (US)' do
@@ -200,7 +200,7 @@ describe NumberMaid do
 
   it 'should fail on invalid YYYY-MM formats' do
     dates = ['2011-13','2011-AA','2011-01','2011-02','2011-03','2011-04']
-    lambda {DateMaid::sweep(dates)}.should raise_error(InvalidDateError)
+    lambda {DateMaid::sweep(dates)}.should raise_error(Quandl::Errors::InvalidDate)
   end
 
   it 'should parse YYYY-MM formats' do

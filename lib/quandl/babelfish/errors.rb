@@ -1,11 +1,11 @@
-module Quandl::Babelfish
-  class UnknownDateFormatError < StandardError;
+module Quandl::Errors
+  class UnknownDateFormat < StandardError;
   end
 
-  class GuessDateFormatError < StandardError;
+  class GuessDateFormat < StandardError;
   end
 
-  class InvalidDateError < StandardError;
+  class InvalidDate < StandardError;
   end
 
 end

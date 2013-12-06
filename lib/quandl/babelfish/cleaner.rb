@@ -2,7 +2,10 @@ module Quandl::Babelfish
   class Cleaner
     class << self
       def process(dirty_array, date_settings={}, number_settings={})
-        return nil if dirty_array.nil?
+        return nil,nil if dirty_array.nil?
+
+        #check if first line is header
+        header=dirty_array.shift unless DateMaid::analyze_date_format(DateMaid::disinfect(dirty_array[0][0]))[0]
 
         #converts dates first
         dirty_array
@@ -19,7 +22,7 @@ module Quandl::Babelfish
           clean_array << new_row
         end
 
-        clean_array
+        return clean_array, header
       end
     end
   end
