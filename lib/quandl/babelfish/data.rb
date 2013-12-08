@@ -1,7 +1,7 @@
 module Quandl
 module Babelfish
 
-class Data < Array
+class Data < Quandl::Data
   
   def initialize(*args, &block)
     # do we have options?
