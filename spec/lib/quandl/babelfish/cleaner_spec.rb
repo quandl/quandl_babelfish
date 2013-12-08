@@ -5,7 +5,9 @@ describe Cleaner do
 
   let(:input){ [] }
   let(:output){ Cleaner.process(input) }
-  subject{ output }
+  let(:data){ output[0] }
+  let(:headers){ output[1] }
+  subject{ data }
   
   context "garbage" do
     let(:input){ [[2456624, 10], [2456625, 20], [2456626, 30]] }
@@ -14,7 +16,7 @@ describe Cleaner do
   
   context "headers with whitespace" do
     let(:input){ [["   Date   ", " C1    ", "C2   ", "    C4"],[1990,1,2,3],[1991,4,5,6]] }
-    its(:headers){ should eq ["Date", "C1", "C2", "C4"] }
+    it{ headers.should eq ["Date", "C1", "C2", "C4"] }
   end
   
   context "annual" do
@@ -23,7 +25,7 @@ describe Cleaner do
     it{ should be_eq_at_index '[0][1]', 1 }
     it{ should be_eq_at_index '[1][0]', Date.new(1991,12,31) }
     it{ should be_eq_at_index '[1][3]', 6 }
-    its(:headers){ should be_nil }
+    it{ headers.should be_nil }
   end
   
   context "numeric date" do
@@ -32,7 +34,7 @@ describe Cleaner do
     it{ should be_eq_at_index '[0][1]', 1 }
     it{ should be_eq_at_index '[0][2]', 2.3 }
     it{ should be_eq_at_index '[0][3]', nil }
-    its(:headers){ should be_nil }
+    it{ headers.should be_nil }
   end
   
   context "data with headers" do
@@ -41,7 +43,7 @@ describe Cleaner do
     it{ should be_eq_at_index '[0][1]', 1 }
     it{ should be_eq_at_index '[0][2]', 2.3 }
     it{ should be_eq_at_index '[0][3]', nil }
-    its(:headers){ should eq ['Date','0','0','0'] }
+    it{ headers.should eq ['Date','0','0','0'] }
   end
 
 end
