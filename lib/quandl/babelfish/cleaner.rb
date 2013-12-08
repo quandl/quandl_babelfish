@@ -24,7 +24,7 @@ class Cleaner
         clean_array << new_row
       end
 
-      return Quandl::Babelfish::Data.new( clean_array, headers: header )
+      return clean_array, header
     end
   end
 end
