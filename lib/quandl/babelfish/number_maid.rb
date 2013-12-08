@@ -1,4 +1,5 @@
-module Quandl::Babelfish
+module Quandl
+module Babelfish
 
   #responsible for number cleaning
   class NumberMaid
@@ -75,4 +76,5 @@ module Quandl::Babelfish
 
     end
   end
+end
 end

@@ -1,4 +1,5 @@
-module Quandl::Babelfish
+module Quandl
+module Babelfish
 
   #responsible for number formatting
   class DateMaid
@@ -233,4 +234,5 @@ module Quandl::Babelfish
 
     end
   end
+end
 end
