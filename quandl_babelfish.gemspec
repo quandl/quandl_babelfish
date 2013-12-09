@@ -16,8 +16,6 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.require_paths = ["lib"]
   
-  s.add_runtime_dependency "quandl_data", "~> 1.3"
-  
   s.add_development_dependency "rspec", "~> 2.13"
   s.add_development_dependency "pry"
 end

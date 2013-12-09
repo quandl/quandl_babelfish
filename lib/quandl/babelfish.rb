@@ -1,8 +1,5 @@
 require "quandl/babelfish/version"
 
-require 'quandl/data'
-
-require "quandl/babelfish/data"
 require "quandl/babelfish/cleaner"
 require "quandl/babelfish/date_maid"
 require "quandl/babelfish/number_maid"
