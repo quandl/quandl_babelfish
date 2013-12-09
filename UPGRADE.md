@@ -1,3 +1,8 @@
+## 0.0.4
+
+* remove quandl_data as a dependency
+
+
 ## 0.0.3
 
 * Add Quandl::Data as a add_runtime_dependency
