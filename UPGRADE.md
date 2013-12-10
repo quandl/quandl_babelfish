@@ -1,3 +1,9 @@
+## 0.0.5
+
+* improve error messages with line, row, context
+* add Quandl::Error::Standard, all errors inherit from Error::Standard
+
+
 ## 0.0.4
 
 * remove quandl_data as a dependency
