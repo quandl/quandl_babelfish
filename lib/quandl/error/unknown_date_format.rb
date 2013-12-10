@@ -1,6 +1,5 @@
 module Quandl
 module Error
-  class UnknownDateFormat < StandardError
-  end
+  class UnknownDateFormat < Quandl::Error::Standard; end
 end
 end
