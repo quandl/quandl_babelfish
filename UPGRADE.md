@@ -1,3 +1,9 @@
+## 0.0.6
+
+* add Babelfish::Chronometer
+* add Babelfish.guess_frequency
+
+
 ## 0.0.5
 
 * improve error messages with line, row, context
