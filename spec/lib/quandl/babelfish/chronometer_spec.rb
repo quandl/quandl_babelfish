@@ -39,12 +39,12 @@ describe Chronometer do
 
   it 'should calculate frequency = daily if only one row' do
     table = [['2010-01-01','1','2']]
-    frequency = Chronometer.process(table)[0]
+    frequency = Chronometer.process(table)
     frequency.should == 'daily'
   end
 
   it 'should calculate frequency = nil if nil table passed' do
-    frequency = Chronometer.process(nil)[0]
+    frequency = Chronometer.process(nil)
     frequency.should == nil
   end
 
