@@ -1,8 +1,10 @@
+## 0.0.7
+* added squaring final data
+
 ## 0.0.6
 
 * add Babelfish::Chronometer
 * add Babelfish.guess_frequency
-
 
 ## 0.0.5
 
