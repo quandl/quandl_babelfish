@@ -46,4 +46,25 @@ describe Cleaner do
     it{ headers.should eq ['Date','0','0','0'] }
   end
 
+  context "data with nil" do
+    let(:input){ [["Date", "Col1"], ["2002", nil], ["2003", "5"]] }
+    it{ should be_eq_at_index '[0][0]', Date.new(2002,12,31) }
+    it{ data[0].length.should ==2}
+    it{ should be_eq_at_index '[0][1]', nil }
+    it{ should be_eq_at_index '[1][0]', Date.new(2003,12,31)  }
+    it{ should be_eq_at_index '[1][1]', 5 }
+    it{ headers.should eq ['Date','Col1'] }
+  end
+
+  context "data with middle nil" do
+    let(:input){ [["Date", "Col1", "Col2"], ["2002", nil, '1'], ["2003", "5", '6']] }
+    it{ should be_eq_at_index '[0][0]', Date.new(2002,12,31) }
+    it{ should be_eq_at_index '[0][1]', nil }
+    it{ should be_eq_at_index '[0][2]', 1}
+    it{ should be_eq_at_index '[1][0]', Date.new(2003,12,31)  }
+    it{ should be_eq_at_index '[1][1]', 5 }
+    it{ should be_eq_at_index '[1][2]', 6 }
+    it{ headers.should eq ['Date','Col1', 'Col2'] }
+  end
+
 end
