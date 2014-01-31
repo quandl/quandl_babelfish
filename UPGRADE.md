@@ -1,5 +1,12 @@
+## 0.0.8
+
+* QUGC-42 you should not have to include data; you might just want to update headers
+
+
 ## 0.0.7
+
 * added squaring final data
+
 
 ## 0.0.6
 
