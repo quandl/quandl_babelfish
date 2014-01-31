@@ -8,7 +8,8 @@ class Cleaner
 
       #check if first line is header
       header=DateMaid::disinfect(dirty_array.shift) unless DateMaid::analyze_date_format(DateMaid::disinfect(dirty_array[0][0])[0])[0]
-
+      return [], header if dirty_array.empty?
+      
       #converts dates first
       dirty_array
       dates = dirty_array.collect{|x| x[0]}
