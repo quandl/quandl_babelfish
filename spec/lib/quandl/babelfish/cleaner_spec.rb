@@ -10,8 +10,8 @@ describe Cleaner do
   subject{ data }
   
   context "given nil" do
-    let(:input){ [[2012, nil, nil], [2011, 20, 20], [2010, 30, 55]] }
-    it{ should eq [[Date.new(2012,12,31), nil], [Date.new(2011,12,31), 20], [Date.new(2010,12,31), 30, 55]] }
+    let(:input){ [[2012, nil], [2011, 20], [2010, 30]] }
+    it{ should eq [[Date.new(2012,12,31), nil], [Date.new(2011,12,31), 20.0], [Date.new(2010,12,31), 30.0]] }
   end
   
   context "mismatch row count" do
