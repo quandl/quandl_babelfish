@@ -25,7 +25,7 @@ class Cleaner
         clean_array << new_row
       end
 
-      return Helper::make_square(clean_array), header
+      return clean_array, header
     end
   end
 end
