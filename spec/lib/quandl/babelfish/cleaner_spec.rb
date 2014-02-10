@@ -59,7 +59,7 @@ describe Cleaner do
   context "data with nil" do
     let(:input){ [["Date", "Col1"], ["2002", nil], ["2003", "5"]] }
     it{ should be_eq_at_index '[0][0]', Date.new(2002,12,31) }
-    it{ data[0].length.should == 1}
+    it{ data[0].length.should == 2}
     it{ should be_eq_at_index '[0][1]', nil }
     it{ should be_eq_at_index '[1][0]', Date.new(2003,12,31)  }
     it{ should be_eq_at_index '[1][1]', 5 }

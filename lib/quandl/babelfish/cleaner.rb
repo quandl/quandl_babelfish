@@ -21,7 +21,9 @@ class Cleaner
       NumberMaid::init(number_settings)
       dirty_array.each.with_index do |row, i|
         new_row=[]
-        (new_row << clean_dates[i]).concat Array(NumberMaid::clean(row[1..-1]))     #add clean date and all clean numbers
+        clean_row=NumberMaid::clean(row[1..-1])
+        clean_row=[nil] if clean_row.nil?
+        (new_row << clean_dates[i]).concat Array(clean_row)    #add clean date and all clean numbers
         clean_array << new_row
       end
 
