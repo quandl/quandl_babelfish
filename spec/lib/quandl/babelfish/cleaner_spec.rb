@@ -9,6 +9,16 @@ describe Cleaner do
   let(:headers){ output[1] }
   subject{ data }
   
+  context "given nil" do
+    let(:input){ [[2012, nil, nil], [2011, 20, 20], [2010, 30, 55]] }
+    it{ should eq [[Date.new(2012,12,31), nil], [Date.new(2011,12,31), 20], [Date.new(2010,12,31), 30, 55]] }
+  end
+  
+  context "mismatch row count" do
+    let(:input){ [[2012], [2011, 20], [2010, 30, 25]] }
+    it{ should eq [[Date.new(2012,12,31)], [Date.new(2011,12,31), 20], [Date.new(2010,12,31), 30, 25]] }
+  end
+  
   context "garbage" do
     let(:input){ [[2456624, 10], [2456625, 20], [2456626, 30]] }
     it{ should be_eq_at_index '[0][0]', Date.new(1970,01,29) }
