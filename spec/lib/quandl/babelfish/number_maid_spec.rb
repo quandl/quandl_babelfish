@@ -123,4 +123,9 @@ describe NumberMaid do
     numbers.should == 0.12345678901235
   end
 
+  it "should handle pound in front" do
+    NumberMaid::clean('#N/A').should be_nil
+  end
+
+
 end
