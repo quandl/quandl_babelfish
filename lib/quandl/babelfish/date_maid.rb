@@ -49,10 +49,10 @@ module Babelfish
         # Regular formats and Custom formats (where Date.parse and Date.strptime
         # fear to tread)
         if re = example.match(/^(\d{1,2})\D(\d{1,2})\D\d{4}/) # eg "07/03/2012"
-          if re[1].to_i > 12
-            return '%d-%m-%Y', nil
-          else
+          if re[2].to_i > 12
             return '%m-%d-%Y', nil
+          else
+            return '%d-%m-%Y', nil
           end
         end
         if re = example.match(/^(\d{1,2})\D(\d{1,2})\D\d{2}/) # eg "07/03/12"
@@ -173,27 +173,36 @@ module Babelfish
 
 
       #find good example of date to use as template for format
-      def find_good_date(all_dates)
+      #if strict == true, no ambiguity is tolerated.  If strict= false, we will accept abbiguity.  (02/05/2009)
+      def find_good_date(all_dates, strict=true)
         good_sample=nil
         all_dates.each do |fuzzy_date|
-          if  usable_cell(fuzzy_date)
+          if  usable_cell(fuzzy_date,strict)
             good_sample = fuzzy_date
             break
           end
         end
-        good_sample
+        if good_sample == nil and strict==true
+          # We could not find a single unambiguous cell.  Let's now be less strict and see if we can find something
+          find_good_date(all_dates,false)
+        else
+          good_sample
+        end
       end
 
-      def usable_cell(cell)
+      # if strict == true then we refuse to accept any ambiguity
+      # if strict == false, we'll settle for a bit of ambiguity
+      def usable_cell(cell,strict)
         return false if cell.nil? || cell.to_s.empty?
         return false if cell.to_s.size > 20 # even annotated date can't be bigger than 20
 
         return true if cell.to_s =~ /^\w{3}\D[456789]\d$/
+
         # date is not usable as an example if it is ambiguous as to day and month
         # 03/04/2012, for example, is ambiguous.  03/17/2012 is NOT ambiguous
         if re = cell.to_s.match(/^(\d{1,2})\D(\d{1,2})\D\d{2,4}/)  # e.g. 03/04/2012
           if re[1].to_i <= 12 and re[2].to_i <= 12
-            return false
+            return strict==true ? false : true
           else
             return true
           end
