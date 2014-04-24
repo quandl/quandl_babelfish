@@ -3,16 +3,6 @@ require 'spec_helper'
 include Quandl::Babelfish
 describe NumberMaid do
 
-  it 'should return an exception because month and day are ambiguous YYYY' do
-    dates = ['01/01/2011','1/2/2011','2/3/2011','11/1/2011']
-    lambda {DateMaid::sweep(dates)}.should raise_error(Error::GuessDateFormat)
-  end
-
-  it 'should return an exception because month and day are ambiguous YY' do
-    dates = ['01/01/11','1/2/11','1/3/11','11/1/11']
-    lambda {DateMaid::sweep(dates)}.should raise_error(Error::GuessDateFormat)
-  end
-
   it 'should remove unwanted characters from dates (eg. &nbsp;)' do
     a=194.chr+160.chr
     dates = ["2005#{a}","#{a}2006",'2007','2008']
@@ -523,6 +513,15 @@ describe NumberMaid do
     dates  = DateMaid::sweep(dates)
     dates[0].should == Date.new(2013,04,30)
     dates[1].should == Date.new(2012,04,29)
+  end
+
+  it 'should handle US format even if it is ambiguous' do
+    dates = ['1/1/1954','1/4/1954','1/7/1954','1/11/1954']
+    dates  = DateMaid::sweep(dates)
+    dates[0].should == Date.new(1954,1,1)
+    dates[1].should == Date.new(1954,4,1)
+    dates[2].should == Date.new(1954,7,1)
+    dates[3].should == Date.new(1954,11,1)
   end
 
 
