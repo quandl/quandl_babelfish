@@ -1,3 +1,6 @@
+## 0.0.11
+ * Fixed US Dates
+
 ## 0.0.9
 
 * QUGC-54 write failing spec for input with nil row value
