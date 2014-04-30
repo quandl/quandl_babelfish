@@ -516,12 +516,21 @@ describe NumberMaid do
   end
 
   it 'should handle US format even if it is ambiguous' do
-    dates = ['1/1/1954','1/4/1954','1/7/1954','1/11/1954']
+    dates = ['1/1/1954','4/1/1954','7/1/1954','11/1/1954']
     dates  = DateMaid::sweep(dates)
     dates[0].should == Date.new(1954,1,1)
     dates[1].should == Date.new(1954,4,1)
     dates[2].should == Date.new(1954,7,1)
     dates[3].should == Date.new(1954,11,1)
+  end
+
+  it 'should handle US format even if it is ambiguous (short year)' do
+    dates = ['1/1/11','4/1/11','7/1/11','11/1/11']
+    dates  = DateMaid::sweep(dates)
+    dates[0].should == Date.new(2011,1,1)
+    dates[1].should == Date.new(2011,4,1)
+    dates[2].should == Date.new(2011,7,1)
+    dates[3].should == Date.new(2011,11,1)
   end
 
 

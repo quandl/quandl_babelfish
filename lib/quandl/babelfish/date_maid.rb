@@ -49,10 +49,10 @@ module Babelfish
         # Regular formats and Custom formats (where Date.parse and Date.strptime
         # fear to tread)
         if re = example.match(/^(\d{1,2})\D(\d{1,2})\D\d{4}/) # eg "07/03/2012"
-          if re[2].to_i > 12
-            return '%m-%d-%Y', nil
-          else
+          if re[1].to_i > 12
             return '%d-%m-%Y', nil
+          else
+            return '%m-%d-%Y', nil
           end
         end
         if re = example.match(/^(\d{1,2})\D(\d{1,2})\D\d{2}/) # eg "07/03/12"
